@@ -1,14 +1,16 @@
 // server/app.js
-const express = require('express');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const session = require('express-session');
-const store = require('connect-pg-simple');
-const path = require('path');
+import express from 'express';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import session from 'express-session';
+import store from 'connect-pg-simple';
+import path from 'path';
+
+import router from './api';
 
 // setup express and sessions
 const app = express();
-const pgSession = require('connect-pg-simple')(session);
+const pgSession = store(session);
 
 app.use(
   session({
@@ -47,6 +49,12 @@ app.use(bodyParser.json()); //json parser
 app
   .use(express.static(path.resolve(__dirname, '..', 'build')))
   // Serve our api
-  .use('/api', require('./api'));
+  .use(router);
 
-module.exports = app;
+const PORT = process.env.PORT || 3001;
+
+const server = app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}.`);
+});
+
+export default server;

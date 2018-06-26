@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "backpack-core": "^0.7.0",
     "body-parser": "^1.18.3",
     "connect-pg-simple": "^5.0.0",
     "express": "^4.16.3",
@@ -14,8 +15,8 @@
     "sequelize": "^4.38.0"
   },
   "scripts": {
-    "start": "nodemon server",
-    "build": "react-scripts build",
+    "start": "backpack",
+    "build": "backpack build",
     "seed": "node db/seed.js",
     "session": "psql dronedb < node_modules/connect-pg-simple/table.sql"
   },

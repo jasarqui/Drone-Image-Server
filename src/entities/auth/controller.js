@@ -1,11 +1,7 @@
-/* readability constants */
-const levels = '../../../';
-const schema = 'db/models/schema/';
+import db from '../../../db';
+import User from '../../../db/models/schema/user';
 
-const db = require(levels + 'db');
-const User = require(levels + schema + 'user');
-
-const login = ({ username, password }) => {
+export const login = ({ username, password }) => {
   return new Promise((resolve, reject) => {
     User.findOne({
       attributes: ['username'],
@@ -22,5 +18,3 @@ const login = ({ username, password }) => {
       });
   });
 };
-
-module.exports = login;

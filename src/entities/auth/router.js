@@ -1,5 +1,7 @@
-const router = require('express').Router();
-const ctrl = require('./controller');
+import { Router } from 'express';
+import * as ctrl from './controller';
+
+const router = Router();
 
 router.post('/login', async (req, res) => {
   try {
@@ -24,4 +26,4 @@ router.post('/login', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
