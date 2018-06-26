@@ -9,12 +9,8 @@ export const login = ({ username, password }) => {
         username: username,
         password: password
       }
-    })
-      .then(result => {
-        return resolve(result);
-      })
-      .catch(err => {
-        return reject(500);
-      });
+    }).then(result => {
+      return result ? resolve(result.dataValues) : reject(404);
+    });
   });
 };
