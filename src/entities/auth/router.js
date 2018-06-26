@@ -7,7 +7,7 @@ router.post('/login', async (req, res) => {
   try {
     const user = await ctrl.login(req.body);
     req.session.user = user;
-    console.log(user);
+
     res.status(200).json({
       status: 200,
       message: 'Successfully logged in',
