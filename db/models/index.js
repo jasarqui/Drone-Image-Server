@@ -1,9 +1,11 @@
 'use strict';
 
-const Product = require('./product')
-const Review = require('./review');
+/* const <ClassName> = require('./schema/<filename>'); */
+const User = require('./schema/user');
+const Image = require('./schema/image');
 
-Product.hasMany(Review);
-Review.belongsTo(Product);
+/* This is where we make table relations */
+User.hasMany(Image);
+Image.belongsTo(User);
 
-module.exports = {Product, Review};
+module.exports = { User, Image };

@@ -1,12 +1,10 @@
 const api = (module.exports = require('express').Router());
 
 /* const <model> = require('./<modelFolder>) */
-const products = require('./entities/products/router');
-const reviews = require('./entities/reviews/router');
+const authRouter = require('./entities/auth/router');
 
-/* api.use('./<modelFolder>, <model>) */
-api.use('/entities/products', products);
-api.use('/entities/reviews', reviews);
+/* api.use('<model>) */
+api.use(authRouter);
 
 // No routes matched? 404.
 api.use((req, res) => res.status(404).end());
