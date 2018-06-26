@@ -9,9 +9,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "morgan": "^1.9.0",
-    "nodemon": "^1.17.5",
     "pg": "^7.4.3",
-    "react-scripts": "^1.1.4",
     "sequelize": "^4.38.0"
   },
   "scripts": {
@@ -21,7 +19,6 @@
     "session": "psql dronedb < node_modules/connect-pg-simple/table.sql"
   },
   "devDependencies": {
-    "path": "^0.12.7",
-    "react-dev-utils": "^5.0.1"
+    "path": "^0.12.7"
   }
 }
