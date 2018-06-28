@@ -7,9 +7,8 @@ const seedUsers = () =>
         email: 'admin@irri.org',
         username: 'admin',
         password: 'admin',
-        firstname: 'admi',
-        middlname: 'nist',
-        lastname: 'rator'
+        firstname: 'admin',
+        lastname: 'istrator'
       }
     ],
     user => db.model('users').create(user)
