@@ -49,4 +49,28 @@ router.get(`/user/:username`, async (req, res) => {
   }
 });
 
+/* This is to search for a user via email */
+router.get(`/user/email/:email`, async (req, res) => {
+  try {
+    console.log(req.params);
+    const user = await ctrl.getEmail(req.params);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched user',
+      data: user
+    });
+  } catch (status) {
+    let message = '';
+    switch (status) {
+      case 404:
+        message = 'User not found';
+        break;
+      case 500:
+        message = 'Internal server error';
+        break;
+    }
+    res.status(status).json({ status, message });
+  }
+});
+
 export default router;

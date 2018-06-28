@@ -14,6 +14,19 @@ export const getUser = ({ username }) => {
   });
 };
 
+export const getEmail = ({ email }) => {
+  return new Promise((resolve, reject) => {
+    User.findOne({
+      attributes: ['username'],
+      where: {
+        email: email
+      }
+    }).then(result => {
+      return result ? resolve(result.dataValues) : resolve(null);
+    });
+  });
+};
+
 export const signup = ({ firstname, lastname, email, username, password }) => {
   return new Promise((resolve, reject) => {
     const values = [email, username, password, firstname, lastname];
