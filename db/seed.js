@@ -1,12 +1,22 @@
 const db = require('../db');
+const sequelize = require('sequelize');
+const bcrypt = require('bcrypt');
 
+/* this is to hash the admin password */
+const saltRounds = 10;
+var adminPass = 'admin';
+bcrypt.hash('admin', saltRounds, (err, hash) => {
+  adminPass = hash;
+});
+
+/* this function seeds the users table */
 const seedUsers = () =>
   db.Promise.map(
     [
       {
         email: 'admin@irri.org',
         username: 'admin',
-        password: 'admin',
+        password: adminPass,
         firstname: 'admin',
         lastname: 'istrator'
       }

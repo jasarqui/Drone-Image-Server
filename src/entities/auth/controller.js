@@ -1,16 +1,18 @@
 import db from '../../../db';
 import User from '../../../db/models/schema/user';
+import bcrypt from 'bcrypt';
 
 export const login = ({ username, password }) => {
   return new Promise((resolve, reject) => {
     User.findOne({
-      attributes: ['username'],
+      attributes: ['username', 'password'],
       where: {
-        username: username,
-        password: password
+        username: username
       }
     }).then(result => {
-      return result ? resolve(result.dataValues) : reject(404);
+      bcrypt.compare(password, result.dataValues.password, (err, res) => {
+        return res ? resolve(result.dataValues) : reject(404);
+      });
     });
   });
 };

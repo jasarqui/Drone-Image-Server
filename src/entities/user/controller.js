@@ -1,5 +1,6 @@
 import db from '../../../db';
 import User from '../../../db/models/schema/user';
+import bcrypt from 'bcrypt';
 
 export const getUser = ({ username }) => {
   return new Promise((resolve, reject) => {
@@ -29,19 +30,18 @@ export const getEmail = ({ email }) => {
 
 export const signup = ({ firstname, lastname, email, username, password }) => {
   return new Promise((resolve, reject) => {
-    const values = [email, username, password, firstname, lastname];
-    const queryString = `
-        INSERT INTO users
-            (email, username, password, firstname, lastname, created_at, updated_at)
-        VALUES
-            (?, ?, ?, ?, ?, now(), now())
-    `;
+    const saltRounds = 10;
 
-    db.query(queryString, {
-      replacements: values,
-      type: db.QueryTypes.INSERT
-    }).then(result => {
-      return result ? resolve(200) : reject(500);
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      User.create({
+        email: email,
+        username: username,
+        password: hash,
+        firstname: firstname,
+        lastname: lastname
+      }).then(result => {
+        return result ? resolve(200) : reject(500);
+      });
     });
   });
 };

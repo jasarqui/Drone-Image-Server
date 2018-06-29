@@ -27,7 +27,7 @@ router.post('/user/signup', async (req, res) => {
 });
 
 /* This is to search for a user via username */
-router.get(`/user/:username`, async (req, res) => {
+router.get(`/user/byUname/:username`, async (req, res) => {
   try {
     const user = await ctrl.getUser(req.params);
     res.status(200).json({
@@ -50,9 +50,8 @@ router.get(`/user/:username`, async (req, res) => {
 });
 
 /* This is to search for a user via email */
-router.get(`/user/email/:email`, async (req, res) => {
+router.get(`/user/byEmail/:email`, async (req, res) => {
   try {
-    console.log(req.params);
     const user = await ctrl.getEmail(req.params);
     res.status(200).json({
       status: 200,
