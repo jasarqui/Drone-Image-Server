@@ -3,10 +3,11 @@ import * as ctrl from './controller';
 
 const router = Router();
 
+/* this is for a user login */
 router.post('/login', async (req, res) => {
   try {
     const user = await ctrl.login(req.body);
-    req.session.user = user;
+    req.session.user = user; // store the session
 
     res.status(200).json({
       status: 200,
@@ -27,14 +28,16 @@ router.post('/login', async (req, res) => {
   }
 });
 
+/* this is for a user logout */
 router.post('/logout', (req, res) => {
-  req.session.destroy();
+  req.session.destroy(); // delete stored session
   res.status(200).json({
     status: 200,
     message: 'Successfully logged out'
   });
 });
 
+/* gets the stored session */
 router.post('/session', (req, res) => {
   res.status(200).json({
     status: 200,

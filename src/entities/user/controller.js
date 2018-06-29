@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 export const getUser = ({ username }) => {
   return new Promise((resolve, reject) => {
+    // SELECT username FROM users WHERE username = request.username;
     User.findOne({
       attributes: ['username'],
       where: {
@@ -17,6 +18,7 @@ export const getUser = ({ username }) => {
 
 export const getEmail = ({ email }) => {
   return new Promise((resolve, reject) => {
+    // SELECT username FROM users WHERE email = request.email;
     User.findOne({
       attributes: ['username'],
       where: {
@@ -32,7 +34,10 @@ export const signup = ({ firstname, lastname, email, username, password }) => {
   return new Promise((resolve, reject) => {
     const saltRounds = 10;
 
+    /* hash the password first, will be stored in the hash variable */
     bcrypt.hash(password, saltRounds, (err, hash) => {
+      // INSERT INTO users (email, username, password, firstname, lastname)
+      // VALUES (request.email, request.userame, hash, request.firstname, request.lastname);
       User.create({
         email: email,
         username: username,
