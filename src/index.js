@@ -33,7 +33,6 @@ app.use(function(req, res, next) {
     'Access-Control-Allow-Headers',
     'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'
   );
-
   res.setHeader('Cache-Control', 'no-cache');
   next();
 });
@@ -45,10 +44,12 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); //json parser
 
+// serve image database
+app.use(express.static(path.resolve(__dirname, '..', 'images')));
 // serve static assets
 app
   .use(express.static(path.resolve(__dirname, '..', 'build')))
-  // Serve our api
+  // serve our api
   .use(router);
 
 const PORT = process.env.PORT || 3001;
