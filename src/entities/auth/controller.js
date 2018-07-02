@@ -11,12 +11,19 @@ export const login = ({ username, password }) => {
         username: username
       }
     }).then(result => {
-      /* bcrypt checks if the database password
+      result
+        ? /* bcrypt checks if the database password
       is a result from crypting the request password */
-      bcrypt.compare(password, result.dataValues.password, (err, res) => {
-        /* return if true else return error 404 */
-        return res ? resolve(result.dataValues) : reject(404);
-      });
+          bcrypt.compare(password, result.dataValues.password, (err, res) => {
+            /* return if true else return error 404 */
+            return res
+              ? resolve({
+                  username: result.dataValues.username,
+                  id: result.dataValues.id
+                })
+              : reject(404);
+          })
+        : reject(404);
     });
   });
 };
