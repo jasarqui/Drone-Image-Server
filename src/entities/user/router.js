@@ -26,31 +26,8 @@ router.post('/user/signup', async (req, res) => {
   }
 });
 
-/* This is to search for a user via username */
-router.get(`/user/byUname/:username`, async (req, res) => {
-  try {
-    const user = await ctrl.getUser(req.params);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched user',
-      data: user
-    });
-  } catch (status) {
-    let message = '';
-    switch (status) {
-      case 404:
-        message = 'User not found';
-        break;
-      case 500:
-        message = 'Internal server error';
-        break;
-    }
-    res.status(status).json({ status, message });
-  }
-});
-
 /* This is to search for a user via email */
-router.get(`/user/byEmail/:email`, async (req, res) => {
+router.get(`/user/:email`, async (req, res) => {
   try {
     const user = await ctrl.getEmail(req.params);
     res.status(200).json({

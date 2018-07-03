@@ -15,7 +15,6 @@ const seedUsers = () =>
     [
       {
         email: 'admin@irri.org',
-        username: 'admin',
         password: adminPass,
         firstname: 'admin',
         lastname: 'istrator'

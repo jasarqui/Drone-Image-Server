@@ -2,13 +2,14 @@ import db from '../../../db';
 import User from '../../../db/models/schema/user';
 import bcrypt from 'bcrypt';
 
-export const login = ({ username, password }) => {
+/* this is for loggin in a user */
+export const login = ({ email, password }) => {
   return new Promise((resolve, reject) => {
-    // SELECT username, password FROM users WHERE username = request.username;
+    // SELECT firstname, lastname, password, id FROM users WHERE email = request.email;
     User.findOne({
-      attributes: ['username', 'password'],
+      attributes: ['firstname', 'lastname', 'password', 'id'],
       where: {
-        username: username
+        email: email
       }
     }).then(result => {
       result
@@ -18,7 +19,8 @@ export const login = ({ username, password }) => {
             /* return if true else return error 404 */
             return res
               ? resolve({
-                  username: result.dataValues.username,
+                  firstname: result.dataValues.firstname,
+                  lastname: result.dataValues.lastname,
                   id: result.dataValues.id
                 })
               : reject(404);
