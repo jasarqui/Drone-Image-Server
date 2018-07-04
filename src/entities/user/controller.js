@@ -5,9 +5,9 @@ import bcrypt from 'bcrypt';
 /* this gets a user using an email to check if exists */
 export const getEmail = ({ email }) => {
   return new Promise((resolve, reject) => {
-    // SELECT username FROM users WHERE email = request.email;
+    // SELECT email FROM users WHERE email = request.email;
     User.findOne({
-      attributes: ['username'],
+      attributes: ['email'],
       where: {
         email: email
       }

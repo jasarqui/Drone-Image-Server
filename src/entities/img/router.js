@@ -29,11 +29,11 @@ router.post('/img/save', async (req, res) => {
 /* This is to retrieve the images */
 router.get(`/img`, async (req, res) => {
   try {
-    const user = await ctrl.getImages();
+    const images = await ctrl.getImages();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched all images',
-      data: user
+      data: images
     });
   } catch (status) {
     let message = '';
