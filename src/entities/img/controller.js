@@ -10,34 +10,53 @@ export const save = ({
   camera,
   date,
   is_private,
+  season,
   userId,
   attrib
 }) => {
   return new Promise((resolve, reject) => {
-    // INSERT INTO images (name, camera, date, filepath, private, user_id)
-    // VALUES (request.name, request.camera, request.date, request.fileURL, request.is_private, request.user_id);
-    Image.create({
-      name: name,
-      camera: camera,
-      date: date,
-      filepath: fileURL,
-      private: is_private,
-      user_id: userId ? userId : null
-    }).then(result => {
-      /* map the data array and use the resulting id
-      from the created image entity */
-      return result
-        ? attrib.map(datum => {
-            // INSERT INTO data (name, value, image_id)
-            // VALUES (datum.name, datum.value, image.id)
-            Data.create({
-              name: datum.name,
-              value: datum.value,
-              image_id: result.dataValues.id
-            });
-            resolve(200);
-          })
-        : reject(500);
+    // INSERT INTO images (name, camera, date, filepath, private, season, user_id)
+    // VALUES (request.name, request.camera, request.date, request.fileURL, request.is_private, request.season, request.user_id);
+    Image.create(
+      {
+        name: name,
+        camera: camera,
+        date: date,
+        filepath: fileURL,
+        private: is_private,
+        season: season,
+        user_id: userId ? userId : null,
+        data: attrib
+      },
+      // this will also do the ff query as bulk to the attrib array:
+      // INSERT INTO data (name, value, userId) VALUES (attrib.name, attrib.value, userId);
+      { include: [Data] }
+    ).then(result => {
+      return result ? resolve(200) : reject(500);
+    });
+  });
+};
+
+/* this will save the image from the client */
+export const saveMany = ({ images }) => {
+  return new Promise((resolve, reject) => {
+    /* practically the same from save one, but loops the image array */
+    images.map(image => {
+      return Image.create(
+        {
+          name: image.name,
+          camera: image.camera,
+          date: image.date,
+          filepath: image.fileURL,
+          private: image.is_private,
+          season: image.season,
+          user_id: image.userId ? image.userId : null,
+          data: image.attrib
+        },
+        { include: [Data] }
+      ).then(result => {
+        return result ? resolve(200) : reject(500);
+      });
     });
   });
 };
@@ -58,3 +77,19 @@ export const getImages = () => {
     });
   });
 };
+
+/* this will delete an image 
+export const deleteImage = ({ id }) => {
+  return new Promise((resolve, reject) => {
+    // DELETE FROM images WHERE id = request.id;
+    Image.destroy({
+      where: {
+        id: id
+      }
+    }).then(result => {
+      console.log(result);
+      return result ? resolve(result) : reject(500);
+    });
+  });
+};
+*/
