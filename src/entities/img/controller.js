@@ -66,6 +66,7 @@ export const saveMany = ({ images }) => {
 export const countPages = ({ category, showData, user, search }) => {
   return new Promise((resolve, reject) => {
     /* flexible where object to reduce number of queries */
+    const op = sequelize.Op;
     var whereObject = {};
 
     /* adding category to whereObject */
