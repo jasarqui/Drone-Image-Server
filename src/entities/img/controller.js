@@ -86,7 +86,7 @@ export const countPages = ({ category, showData, user, search }) => {
     user ? (whereObject.user_id = user) : whereObject;
 
     /* adding search to whereObject */
-    search ? (whereObject.name = search) : whereObject;
+    search ? (whereObject.name = { [op.iLike]: `%${search}%` }) : whereObject;
 
     Image.count({
       where: whereObject
