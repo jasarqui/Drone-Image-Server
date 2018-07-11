@@ -100,6 +100,7 @@ export const countPages = ({ category, showData, user, search }) => {
 export const getImages = ({ category, showData, user, search, start }) => {
   return new Promise((resolve, reject) => {
     /* flexible where object to reduce number of queries */
+    const op = sequelize.Op;
     var whereObject = {};
 
     /* adding category to whereObject */
@@ -120,7 +121,7 @@ export const getImages = ({ category, showData, user, search, start }) => {
     user ? (whereObject.user_id = user) : whereObject;
 
     /* adding search to whereObject */
-    search ? (whereObject.name = search) : whereObject;
+    search ? (whereObject.name = { [op.iLike]: `%${search}%` }) : whereObject;
 
     Image.findAll({
       include: [
