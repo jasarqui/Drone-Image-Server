@@ -2,6 +2,7 @@ import db from '../../../db';
 import Image from '../../../db/models/schema/image';
 import Data from '../../../db/models/schema/data';
 import User from '../../../db/models/schema/user';
+import sequelize from 'sequelize';
 
 /* this will save the image from the client */
 export const save = ({
@@ -61,19 +62,77 @@ export const saveMany = ({ images }) => {
   });
 };
 
-/* this will get all images */
-// will be changed to include pagination
-export const getImages = () => {
+/* this will get the total pages for pagination */
+export const countPages = ({ category, showData, user, search }) => {
   return new Promise((resolve, reject) => {
-    // SELECT * FROM users, data ORDER BY date DESC;
+    /* flexible where object to reduce number of queries */
+    var whereObject = {};
+
+    /* adding category to whereObject */
+    category === 'Dry Season'
+      ? (whereObject.season = 'DRY')
+      : category === 'Wet Season'
+        ? (whereObject.season = 'WET')
+        : whereObject;
+
+    /* adding showData to whereObject */
+    showData === 'Public Data'
+      ? (whereObject.private = false)
+      : showData === 'Private Data'
+        ? (whereObject.private = true)
+        : whereObject;
+
+    /* adding user to whereObject */
+    user ? (whereObject.user_id = user) : whereObject;
+
+    /* adding search to whereObject */
+    search ? (whereObject.name = search) : whereObject;
+
+    Image.count({
+      where: whereObject
+    }).then(result => {
+      return result ? resolve(result) : reject(404);
+    });
+  });
+};
+
+/* this will get the total pages for pagination */
+export const getImages = ({ category, showData, user, search, start }) => {
+  return new Promise((resolve, reject) => {
+    /* flexible where object to reduce number of queries */
+    var whereObject = {};
+
+    /* adding category to whereObject */
+    category === 'Dry Season'
+      ? (whereObject.season = 'DRY')
+      : category === 'Wet Season'
+        ? (whereObject.season = 'WET')
+        : whereObject;
+
+    /* adding showData to whereObject */
+    showData === 'Public Data'
+      ? (whereObject.private = false)
+      : showData === 'Private Data'
+        ? (whereObject.private = true)
+        : whereObject;
+
+    /* adding user to whereObject */
+    user ? (whereObject.user_id = user) : whereObject;
+
+    /* adding search to whereObject */
+    search ? (whereObject.name = search) : whereObject;
+
     Image.findAll({
       include: [
         { model: Data, required: true },
         { model: User, attributes: ['firstname', 'lastname'] }
       ],
-      order: ['date']
+      where: whereObject,
+      order: ['date'],
+      offset: start,
+      limit: 6
     }).then(result => {
-      return result ? resolve(result) : reject(500);
+      return result ? resolve(result) : reject(404);
     });
   });
 };

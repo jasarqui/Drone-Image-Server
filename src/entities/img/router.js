@@ -49,29 +49,6 @@ router.post('/img/saveMany', async (req, res) => {
   }
 });
 
-/* This is to retrieve the images */
-router.get(`/img`, async (req, res) => {
-  try {
-    const images = await ctrl.getImages();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched all images',
-      data: images
-    });
-  } catch (status) {
-    let message = '';
-    switch (status) {
-      case 404:
-        message = 'No images found';
-        break;
-      case 500:
-        message = 'Internal server error';
-        break;
-    }
-    res.status(status).json({ status, message });
-  }
-});
-
 /* This sends the info from the image to the database */
 router.put('/img/update', async (req, res) => {
   try {
@@ -94,6 +71,71 @@ router.put('/img/update', async (req, res) => {
     res.status(status).json({ status, message });
   }
 });
+
+/* This is to retrieve the total page count */
+router.get(
+  `/img/count/:myUpload&:category&:showData&:search`,
+  async (req, res) => {
+    try {
+      const totalPages = await ctrl.countPages({
+        category: req.params.category,
+        showData: req.params.showData,
+        user: req.params.myUpload === 'true' ? req.session.user : null,
+        search: req.params.search !== 'null' ? req.params.search : null
+      });
+
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully fetched total pages',
+        data: totalPages
+      });
+    } catch (status) {
+      let message = '';
+      switch (status) {
+        case 404:
+          message = 'No images found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
+    }
+  }
+);
+
+/* This is to retrieve the images */
+router.get(
+  `/img/:myUpload&:category&:showData&:search&:start`,
+  async (req, res) => {
+    try {
+      const images = await ctrl.getImages({
+        category: req.params.category,
+        showData: req.params.showData,
+        user: req.params.myUpload === 'true' ? req.session.user : null,
+        search: req.params.search !== 'null' ? req.params.search : null,
+        start: parseInt(req.params.start)
+      });
+
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully fetched all images',
+        data: images
+      });
+    } catch (status) {
+      let message = '';
+      switch (status) {
+        case 404:
+          message = 'No images found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
+    }
+  }
+);
 
 /* deletes an image 
 router.delete(`/img/:id`, async (req, res) => {
