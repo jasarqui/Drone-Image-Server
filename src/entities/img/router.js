@@ -80,7 +80,7 @@ router.get(
       const totalPages = await ctrl.countPages({
         category: req.params.category,
         showData: req.params.showData,
-        user: req.params.myUpload === 'true' ? req.session.user : null,
+        user: req.params.myUpload === 'true' ? req.session.user.id : null,
         search: req.params.search !== 'null' ? req.params.search : null
       });
 
@@ -112,7 +112,7 @@ router.get(
       const images = await ctrl.getImages({
         category: req.params.category,
         showData: req.params.showData,
-        user: req.params.myUpload === 'true' ? req.session.user : null,
+        user: req.params.myUpload === 'true' ? req.session.user.id : null,
         search: req.params.search !== 'null' ? req.params.search : null,
         start: parseInt(req.params.start)
       });
