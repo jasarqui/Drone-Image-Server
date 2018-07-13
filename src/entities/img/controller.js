@@ -177,3 +177,31 @@ export const getImage = id => {
     });
   });
 };
+
+/* updates an image */
+export const updateImage = ({
+  name,
+  camera,
+  date,
+  is_private,
+  season,
+  attrib,
+  id
+}) => {
+  return new Promise((resolve, reject) => {
+    Image.update(
+      {
+        name: name,
+        camera: camera,
+        date: date,
+        private: is_private,
+        season: season,
+        data: attrib
+      },
+      { where: { id: id } },
+      { include: [Data] }
+    ).then(result => {
+      return result ? resolve(result) : reject(500);
+    });
+  });
+};

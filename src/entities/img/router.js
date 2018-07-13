@@ -49,10 +49,10 @@ router.post('/img/saveMany', async (req, res) => {
   }
 });
 
-/* This sends the info from the image to the database */
+/* This updates the image */
 router.put('/img/update', async (req, res) => {
   try {
-    // const image = await ctrl.updateImage(req.body);
+    await ctrl.updateImage(req.body);
 
     res.status(200).json({
       status: 200,
