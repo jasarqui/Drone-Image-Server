@@ -11,8 +11,8 @@ const Image = db.define('images', {
   date: { type: Sequelize.STRING, allowNull: false },
   filepath: { type: Sequelize.STRING, allowNull: false },
   private: { type: Sequelize.BOOLEAN, allowNull: false },
-  season: { type: Sequelize.STRING, allowNull: false }
-  /* deleted: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false } */
+  season: { type: Sequelize.STRING, allowNull: false },
+  archived: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
 });
 
 module.exports = Image;

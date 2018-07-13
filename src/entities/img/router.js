@@ -137,13 +137,12 @@ router.get(
   }
 );
 
-/* deletes an image 
-router.delete(`/img/:id`, async (req, res) => {
+router.put(`/img/archive`, async (req, res) => {
   try {
-    await ctrl.deleteImage(req.params);
+    await ctrl.archiveImage(req.body);
     res.status(200).json({
       status: 200,
-      message: 'Successfully deleted the image'
+      message: 'Successfully archived the image'
     });
   } catch (status) {
     let message = '';
@@ -158,6 +157,5 @@ router.delete(`/img/:id`, async (req, res) => {
     res.status(status).json({ status, message });
   }
 });
-*/
 
 export default router;

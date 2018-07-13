@@ -68,6 +68,7 @@ export const countPages = ({ category, showData, user, search }) => {
     /* flexible where object to reduce number of queries */
     const op = sequelize.Op;
     var whereObject = {};
+    whereObject.archived = false;
 
     /* adding category to whereObject */
     category === 'Dry Season'
@@ -81,7 +82,9 @@ export const countPages = ({ category, showData, user, search }) => {
       ? (whereObject.private = false)
       : showData === 'Private Data'
         ? (whereObject.private = true)
-        : whereObject;
+        : showData === 'Archived Data'
+          ? (whereObject.archived = true)
+          : whereObject;
 
     /* adding user to whereObject */
     user ? (whereObject.user_id = user) : whereObject;
@@ -103,6 +106,7 @@ export const getImages = ({ category, showData, user, search, start }) => {
     /* flexible where object to reduce number of queries */
     const op = sequelize.Op;
     var whereObject = {};
+    whereObject.archived = false;
 
     /* adding category to whereObject */
     category === 'Dry Season'
@@ -116,7 +120,9 @@ export const getImages = ({ category, showData, user, search, start }) => {
       ? (whereObject.private = false)
       : showData === 'Private Data'
         ? (whereObject.private = true)
-        : whereObject;
+        : showData === 'Archived Data'
+          ? (whereObject.archived = true)
+          : whereObject;
 
     /* adding user to whereObject */
     user ? (whereObject.user_id = user) : whereObject;
@@ -139,18 +145,11 @@ export const getImages = ({ category, showData, user, search, start }) => {
   });
 };
 
-/* this will delete an image 
-export const deleteImage = ({ id }) => {
+/* archives an image */
+export const archiveImage = ({ id }) => {
   return new Promise((resolve, reject) => {
-    // DELETE FROM images WHERE id = request.id;
-    Image.destroy({
-      where: {
-        id: id
-      }
-    }).then(result => {
-      console.log(result);
+    Image.update({ archived: true }, { where: { id: id } }).then(result => {
       return result ? resolve(result) : reject(500);
     });
   });
 };
-*/
