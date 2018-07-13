@@ -7,7 +7,7 @@ export const login = ({ email, password }) => {
   return new Promise((resolve, reject) => {
     // SELECT firstname, lastname, password, id FROM users WHERE email = request.email;
     User.findOne({
-      attributes: ['firstname', 'lastname', 'password', 'id'],
+      attributes: ['firstname', 'lastname', 'password', 'id', 'pic'],
       where: {
         email: email
       }
@@ -21,7 +21,8 @@ export const login = ({ email, password }) => {
               ? resolve({
                   firstname: result.dataValues.firstname,
                   lastname: result.dataValues.lastname,
-                  id: result.dataValues.id
+                  id: result.dataValues.id,
+                  pic: result.dataValues.pic
                 })
               : reject(404);
           })

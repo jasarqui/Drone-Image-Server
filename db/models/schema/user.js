@@ -9,7 +9,8 @@ const User = db.define('users', {
   email: { type: Sequelize.STRING, allowNull: false },
   password: { type: Sequelize.STRING, allowNull: false },
   firstname: { type: Sequelize.STRING, allowNull: false },
-  lastname: { type: Sequelize.STRING, allowNull: false }
+  lastname: { type: Sequelize.STRING, allowNull: false },
+  pic: { type: Sequelize.STRING, allowNull: false }
 });
 
 module.exports = User;

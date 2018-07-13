@@ -18,7 +18,7 @@ export const getEmail = ({ email }) => {
 };
 
 /* this creates a new user in the database */
-export const signup = ({ firstname, lastname, email, password }) => {
+export const signup = ({ firstname, lastname, email, password, pic }) => {
   return new Promise((resolve, reject) => {
     const saltRounds = 10;
 
@@ -30,7 +30,8 @@ export const signup = ({ firstname, lastname, email, password }) => {
         email: email,
         password: hash,
         firstname: firstname,
-        lastname: lastname
+        lastname: lastname,
+        pic: pic
       }).then(result => {
         return result ? resolve(200) : reject(500);
       });

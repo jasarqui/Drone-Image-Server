@@ -137,12 +137,59 @@ router.get(
   }
 );
 
+/* this is to archive an image */
 router.put(`/img/archive`, async (req, res) => {
   try {
     await ctrl.archiveImage(req.body);
     res.status(200).json({
       status: 200,
       message: 'Successfully archived the image'
+    });
+  } catch (status) {
+    let message = '';
+    switch (status) {
+      case 404:
+        message = 'Image not found';
+        break;
+      case 500:
+        message = 'Internal server error';
+        break;
+    }
+    res.status(status).json({ status, message });
+  }
+});
+
+/* this is to unarchive an image */
+router.put(`/img/unarchive`, async (req, res) => {
+  try {
+    await ctrl.unarchiveImage(req.body);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully unarchived the image'
+    });
+  } catch (status) {
+    let message = '';
+    switch (status) {
+      case 404:
+        message = 'Image not found';
+        break;
+      case 500:
+        message = 'Internal server error';
+        break;
+    }
+    res.status(status).json({ status, message });
+  }
+});
+
+/* This is to retrieve an image */
+router.get(`/img/view/:id`, async (req, res) => {
+  try {
+    const image = await ctrl.getImage(req.params.id);
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched all images',
+      data: image
     });
   } catch (status) {
     let message = '';

@@ -153,3 +153,27 @@ export const archiveImage = ({ id }) => {
     });
   });
 };
+
+/* unarchives an image */
+export const unarchiveImage = ({ id }) => {
+  return new Promise((resolve, reject) => {
+    Image.update({ archived: false }, { where: { id: id } }).then(result => {
+      return result ? resolve(result) : reject(500);
+    });
+  });
+};
+
+/* retrieves an image */
+export const getImage = id => {
+  return new Promise((resolve, reject) => {
+    Image.findOne({
+      include: [
+        { model: Data, required: true },
+        { model: User, attributes: ['firstname', 'lastname'] }
+      ],
+      where: { id: id }
+    }).then(result => {
+      return result ? resolve(result) : reject(404);
+    });
+  });
+};
