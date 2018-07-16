@@ -90,7 +90,16 @@ export const countPages = ({ category, showData, user, search }) => {
     user ? (whereObject.user_id = user) : whereObject;
 
     /* adding search to whereObject */
-    search ? (whereObject.name = { [op.iLike]: `%${search}%` }) : whereObject;
+    search
+      ? (whereObject = {
+          ...whereObject,
+          [op.or]: {
+            name: { [op.iLike]: `%${search}%` },
+            camera: { [op.iLike]: `%${search}%` },
+            date: { [op.iLike]: `%${search}%` }
+          }
+        })
+      : whereObject;
 
     Image.count({
       where: whereObject
@@ -128,7 +137,16 @@ export const getImages = ({ category, showData, user, search, start }) => {
     user ? (whereObject.user_id = user) : whereObject;
 
     /* adding search to whereObject */
-    search ? (whereObject.name = { [op.iLike]: `%${search}%` }) : whereObject;
+    search
+      ? (whereObject = {
+          ...whereObject,
+          [op.or]: {
+            name: { [op.iLike]: `%${search}%` },
+            camera: { [op.iLike]: `%${search}%` },
+            date: { [op.iLike]: `%${search}%` }
+          }
+        })
+      : whereObject;
 
     Image.findAll({
       include: [
