@@ -2,38 +2,53 @@ import db from '../../../db';
 import Image from '../../../db/models/schema/image';
 import Data from '../../../db/models/schema/data';
 import User from '../../../db/models/schema/user';
+import Folder from '../../../db/models/schema/folder';
 import sequelize from 'sequelize';
 
 /* this will save the image from the client */
 export const save = ({
   fileURL,
   name,
-  camera,
   date,
+  camera,
+  drone,
+  image,
+  location,
   is_private,
-  season,
-  userId,
-  attrib
+  env_cond,
+  attrib,
+  folder,
+  userId
 }) => {
   return new Promise((resolve, reject) => {
-    // INSERT INTO images (name, camera, date, filepath, private, season, user_id)
-    // VALUES (request.name, request.camera, request.date, request.fileURL, request.is_private, request.season, request.user_id);
-    Image.create(
-      {
-        name: name,
-        camera: camera,
-        date: date,
-        filepath: fileURL,
-        private: is_private,
-        season: season,
-        user_id: userId ? userId : null,
-        data: attrib
-      },
-      // this will also do the ff query as bulk to the attrib array:
-      // INSERT INTO data (name, value, userId) VALUES (attrib.name, attrib.value, userId);
-      { include: [Data] }
-    ).then(result => {
-      return result ? resolve(200) : reject(500);
+    /* find the folder's folder_id */
+    Folder.findOne({
+      attributes: ['id'],
+      where: { name: folder }
+    }).then(folder_id => {
+      // INSERT INTO images (name, camera, date, filepath, private, season, user_id)
+      // VALUES (request.name, request.camera, request.date, request.fileURL, request.is_private, request.season, request.user_id);
+      Image.create(
+        {
+          name: name,
+          camera: camera,
+          drone: drone,
+          location: location,
+          image: image,
+          date: date,
+          env_cond: env_cond,
+          filepath: fileURL,
+          private: is_private,
+          user_id: userId ? userId : null,
+          data: attrib,
+          folder_id: folder_id.dataValues.id
+        },
+        // this will also do the ff query as bulk to the attrib array:
+        // INSERT INTO data (name, value, userId) VALUES (attrib.name, attrib.value, userId);
+        { include: [Data] }
+      ).then(result => {
+        return result ? resolve(200) : reject(500);
+      });
     });
   });
 };
