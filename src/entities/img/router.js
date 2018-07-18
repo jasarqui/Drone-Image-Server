@@ -74,14 +74,15 @@ router.put('/img/update', async (req, res) => {
 
 /* This is to retrieve the total page count */
 router.get(
-  `/img/count/:myUpload&:category&:showData&:search`,
+  `/img/count/:myUpload&:category&:showData&:search&:folder_id`,
   async (req, res) => {
     try {
       const totalPages = await ctrl.countPages({
         category: req.params.category,
         showData: req.params.showData,
         user: req.params.myUpload === 'true' ? req.session.user.id : null,
-        search: req.params.search !== 'null' ? req.params.search : null
+        search: req.params.search !== 'null' ? req.params.search : null,
+        folder_id: req.params.folder_id
       });
 
       res.status(200).json({
@@ -106,7 +107,7 @@ router.get(
 
 /* This is to retrieve the images */
 router.get(
-  `/img/:myUpload&:category&:showData&:search&:start`,
+  `/img/:myUpload&:category&:showData&:search&:folder_id&:start`,
   async (req, res) => {
     try {
       const images = await ctrl.getImages({
@@ -114,6 +115,7 @@ router.get(
         showData: req.params.showData,
         user: req.params.myUpload === 'true' ? req.session.user.id : null,
         search: req.params.search !== 'null' ? req.params.search : null,
+        folder_id: req.params.folder_id,
         start: parseInt(req.params.start)
       });
 

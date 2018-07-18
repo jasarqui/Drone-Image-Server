@@ -15,6 +15,7 @@ export const save = ({
   image,
   location,
   is_private,
+  season,
   env_cond,
   attrib,
   folder,
@@ -37,6 +38,7 @@ export const save = ({
           image: image,
           date: date,
           env_cond: env_cond,
+          season: season,
           filepath: fileURL,
           private: is_private,
           user_id: userId ? userId : null,
@@ -58,32 +60,43 @@ export const saveMany = ({ images }) => {
   return new Promise((resolve, reject) => {
     /* practically the same from save one, but loops the image array */
     images.map(image => {
-      return Image.create(
-        {
-          name: image.name,
-          camera: image.camera,
-          date: image.date,
-          filepath: image.fileURL,
-          private: image.is_private,
-          season: image.season,
-          user_id: image.userId ? image.userId : null,
-          data: image.attrib
-        },
-        { include: [Data] }
-      ).then(result => {
-        return result ? resolve(200) : reject(500);
+      return Folder.findOne({
+        attributes: ['id'],
+        where: { name: image.folder }
+      }).then(folder_id => {
+        Image.create(
+          {
+            name: image.name,
+            camera: image.camera,
+            drone: image.drone,
+            location: image.location,
+            image: image.image,
+            date: image.date,
+            env_cond: image.env_cond,
+            season: image.season,
+            filepath: image.fileURL,
+            private: image.is_private,
+            user_id: image.userId ? image.userId : null,
+            data: image.attrib,
+            folder_id: folder_id.dataValues.id
+          },
+          { include: [Data] }
+        ).then(result => {
+          return result ? resolve(200) : reject(500);
+        });
       });
     });
   });
 };
 
 /* this will get the total pages for pagination */
-export const countPages = ({ category, showData, user, search }) => {
+export const countPages = ({ category, showData, user, search, folder_id }) => {
   return new Promise((resolve, reject) => {
     /* flexible where object to reduce number of queries */
     const op = sequelize.Op;
     var whereObject = {};
     whereObject.archived = false;
+    whereObject.folder_id = folder_id;
 
     /* adding category to whereObject */
     category === 'Dry Season'
@@ -111,7 +124,12 @@ export const countPages = ({ category, showData, user, search }) => {
           [op.or]: {
             name: { [op.iLike]: `%${search}%` },
             camera: { [op.iLike]: `%${search}%` },
-            date: { [op.iLike]: `%${search}%` }
+            drone: { [op.iLike]: `%${search}%` },
+            location: { [op.iLike]: `%${search}%` },
+            image: { [op.iLike]: `%${search}%` },
+            date: { [op.iLike]: `%${search}%` },
+            env_cond: { [op.iLike]: `%${search}%` },
+            season: { [op.iLike]: `%${search}%` }
           }
         })
       : whereObject;
@@ -125,12 +143,20 @@ export const countPages = ({ category, showData, user, search }) => {
 };
 
 /* this will get the total pages for pagination */
-export const getImages = ({ category, showData, user, search, start }) => {
+export const getImages = ({
+  category,
+  showData,
+  user,
+  search,
+  folder_id,
+  start
+}) => {
   return new Promise((resolve, reject) => {
     /* flexible where object to reduce number of queries */
     const op = sequelize.Op;
     var whereObject = {};
     whereObject.archived = false;
+    whereObject.folder_id = folder_id;
 
     /* adding category to whereObject */
     category === 'Dry Season'
@@ -158,7 +184,12 @@ export const getImages = ({ category, showData, user, search, start }) => {
           [op.or]: {
             name: { [op.iLike]: `%${search}%` },
             camera: { [op.iLike]: `%${search}%` },
-            date: { [op.iLike]: `%${search}%` }
+            drone: { [op.iLike]: `%${search}%` },
+            location: { [op.iLike]: `%${search}%` },
+            image: { [op.iLike]: `%${search}%` },
+            date: { [op.iLike]: `%${search}%` },
+            env_cond: { [op.iLike]: `%${search}%` },
+            season: { [op.iLike]: `%${search}%` }
           }
         })
       : whereObject;
