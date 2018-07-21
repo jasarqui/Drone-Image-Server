@@ -145,3 +145,19 @@ export const editFolder = ({ season, date, layout, report, id }) => {
     });
   });
 };
+
+/* updates a folder's files */
+export const editFiles = ({ layout, report, id }) => {
+  return new Promise((resolve, reject) => {
+    Folder.update(
+      {
+        layout: layout,
+        report: report
+      },
+      { where: { id: id } },
+      { include: [Layout] }
+    ).then(result => {
+      return result ? resolve(result) : reject(500);
+    });
+  });
+};

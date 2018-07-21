@@ -29,8 +29,32 @@ router.post('/folder/add', async (req, res) => {
 /* This is to edit a folder */
 router.put(`/folder/edit`, async (req, res) => {
   try {
-    console.log(req.body);
     await ctrl.editFolder(req.body);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully edited folder'
+    });
+  } catch (status) {
+    let message = '';
+    switch (status) {
+      case 400:
+        message = 'Folder already exists';
+        break;
+      case 404:
+        message = 'Folder not found';
+        break;
+      case 500:
+        message = 'Internal server error';
+        break;
+    }
+    res.status(status).json({ status, message });
+  }
+});
+
+/* This is to edit files of a folder */
+router.put(`/folder/files/edit`, async (req, res) => {
+  try {
+    await ctrl.editFiles(req.body);
     res.status(200).json({
       status: 200,
       message: 'Successfully edited folder'
