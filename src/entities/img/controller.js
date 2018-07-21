@@ -245,27 +245,43 @@ export const getImage = id => {
 /* updates an image */
 export const updateImage = ({
   name,
-  camera,
   date,
+  camera,
+  drone,
+  image,
+  location,
   is_private,
   season,
+  env_cond,
   attrib,
+  folder,
   id
 }) => {
   return new Promise((resolve, reject) => {
-    Image.update(
-      {
-        name: name,
-        camera: camera,
-        date: date,
-        private: is_private,
-        season: season,
-        data: attrib
-      },
-      { where: { id: id } },
-      { include: [Data] }
-    ).then(result => {
-      return result ? resolve(result) : reject(500);
+    /* find the folder's folder_id */
+    Folder.findOne({
+      attributes: ['id'],
+      where: { name: folder }
+    }).then(folder_id => {
+      Image.update(
+        {
+          name: name,
+          date: date,
+          camera: camera,
+          drone: drone,
+          image: image,
+          location: location,
+          private: is_private,
+          season: season,
+          env_cond: env_cond,
+          data: attrib,
+          folder_id: folder_id
+        },
+        { where: { id: id } },
+        { include: [Data] }
+      ).then(result => {
+        return result ? resolve(result) : reject(500);
+      });
     });
   });
 };

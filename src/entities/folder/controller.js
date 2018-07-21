@@ -1,19 +1,24 @@
 import db from '../../../db';
 import Folder from '../../../db/models/schema/folder';
 import Image from '../../../db/models/schema/image';
+import Layout from '../../../db/models/schema/layout';
 import sequelize from 'sequelize';
 
 /* this creates a new user in the database */
-export const addFolder = ({ season, date }) => {
+export const addFolder = ({ season, date, report, layout }) => {
   return new Promise((resolve, reject) => {
     // INSERT INTO users (email, password, firstname, lastname)
     // VALUES (request.email, hash, request.firstname, request.lastname);
-    Folder.create({
-      name: (season === 'WET' ? 'WS' : 'DS') + date,
-      season: season,
-      year: date,
-      report: ''
-    })
+    Folder.create(
+      {
+        name: (season === 'WET' ? 'WS' : 'DS') + date,
+        season: season,
+        year: date,
+        report: report,
+        layout: layout
+      },
+      { include: [Layout] }
+    )
       .then(result => {
         return result ? resolve(200) : reject(500);
       })
@@ -106,6 +111,37 @@ export const getAllFolders = () => {
       attributes: ['name']
     }).then(result => {
       return result ? resolve(result) : reject(404);
+    });
+  });
+};
+
+/* this will get a folder */
+export const getFolder = id => {
+  return new Promise((resolve, reject) => {
+    Folder.findOne(
+      { where: { id: id } },
+      { include: { model: Layout, required: true } }
+    ).then(result => {
+      return result ? resolve(result) : reject(404);
+    });
+  });
+};
+
+/* updates a folder */
+export const editFolder = ({ season, date, layout, report, id }) => {
+  return new Promise((resolve, reject) => {
+    Folder.update(
+      {
+        name: (season === 'WET' ? 'WS' : 'DS') + date,
+        season: season,
+        year: date,
+        layout: layout,
+        report: report
+      },
+      { where: { id: id } },
+      { include: [Layout] }
+    ).then(result => {
+      return result ? resolve(result) : reject(500);
     });
   });
 };
