@@ -8,10 +8,17 @@ const Folder = require('./schema/folder');
 const Layout = require('./schema/layout');
 
 /* This is where we make table relations */
+// user to image relation
 User.hasMany(Image);
 Image.belongsTo(User);
+// image to data relation
 Image.hasMany(Datum);
+Datum.belongsTo(Image);
+// folder to image relation
 Folder.hasMany(Image);
+Image.belongsTo(Folder);
+// folder to layout relation
 Folder.hasMany(Layout);
+Layout.belongsTo(Layout);
 
 module.exports = { User, Image, Datum, Folder, Layout };

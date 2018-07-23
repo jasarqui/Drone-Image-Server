@@ -233,6 +233,7 @@ export const getImage = id => {
     Image.findOne({
       include: [
         { model: Data, required: true },
+        { model: Folder, attributes: ['year', 'name'] },
         { model: User, attributes: ['firstname', 'lastname'] }
       ],
       where: { id: id }
@@ -275,12 +276,12 @@ export const updateImage = ({
           season: season,
           env_cond: env_cond,
           data: attrib,
-          folder_id: folder_id
+          folder_id: folder_id.dataValues.id
         },
         { where: { id: id } },
         { include: [Data] }
       ).then(result => {
-        return result ? resolve(result) : reject(500);
+        return result ? resolve(200) : reject(500);
       });
     });
   });
