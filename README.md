@@ -1,5 +1,7 @@
 This is a web application made for the [International Rice Research Institute](http://irri.org/) for the internship project, <br><strong>Drone Image Analysis.</strong>
 
+Official IRRI repository for this project is found [here](https://github.com/InternationalRiceResearchInstitute/Drone-Image-Server).
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 ## Table of Contents
@@ -14,11 +16,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 The application requires the following installed for development:
 
-* `NodeJS` framework
-* `PostgreSQL` database
-* `yarn` (optional) CLI
+* `NodeJS` framework (version 8.6.0 above)
+* `PostgreSQL` database (version 9.3.23 above)
+* `yarn` (optional) CLI (version 1.2.1 above)
 
-In the PostgreSQL database, you must create a `SUPERUSER` to access the database, and a schema called `dronedb` with the `PASSWORD` of `dronedb`.
+In the PostgreSQL database, you must create a `SUPERUSER` to access the database, and a `PUBLIC` (access privilege to all) schema called `dronedb` with the `PASSWORD` of `dronedb`.
 
 Clone the application [server](https://github.com/jasarqui/Drone-Image-Server) and [client](https://github.com/jasarqui/Drone-Image-Client) folders. Run a terminal inside both folders and then run `npm install` or `yarn add` in each. This will set up the remaining dependencies needed by the application to run.
 
@@ -95,4 +97,4 @@ If there are any bugs or feedback that concerns the project, go to the issues ([
 
 ## About the Developers
 
-This web application is made by [Jasper Arquilita](https://github.com/jasarqui), a student from University of the Philippines Los Baños. The other part of the project which is for <strong>Image Processing</strong> is made by a co-student, Loria Malingan.
+This web application is made by [Jasper Arquilita](https://github.com/jasarqui), a student from University of the Philippines Los Baños. The other part of the project which is for <strong>Image Processing</strong> is made by a co-student, [Loria Malingan](https://github.com/malinganloria).
