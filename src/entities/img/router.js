@@ -72,6 +72,30 @@ router.put('/img/update', async (req, res) => {
   }
 });
 
+/* This segments the image */
+router.post('/img/segment', async (req, res) => {
+  try {
+    const fields = await ctrl.segmentImage({file: req.body});
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully segmented image',
+      data: fields
+    });
+  } catch (status) {
+    let message = '';
+    switch (status) {
+      case 500:
+        message = 'Internal server error while segmenting image';
+        break;
+      case 400:
+        message = 'Bad request';
+        break;
+    }
+    res.status(status).json({ status, message });
+  }
+});
+
 /* This is to retrieve the total page count */
 router.get(
   `/img/count/:myUpload&:category&:showData&:search&:folder_id`,
