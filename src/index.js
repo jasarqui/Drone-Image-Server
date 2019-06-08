@@ -41,8 +41,9 @@ app.use(function(req, res, next) {
 app.use(morgan('dev'));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.json({ limit: '100mb' })); //json parser
-app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
+app.use(bodyParser.json({ limit: '200mb' })); //json parser
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
+app.use(bodyParser.text({ limit: '200mb' }));
 
 // serve image database
 app.use(express.static(path.resolve(__dirname, '..', 'images')));

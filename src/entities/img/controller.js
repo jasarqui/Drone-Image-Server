@@ -7,6 +7,7 @@ import sequelize from "sequelize";
 import fs from "fs";
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
+var request = require('request').defaults({ encoding: null });
 var cloudinary = require("cloudinary").v2;
 
 /* create constants here */
@@ -98,6 +99,53 @@ export const saveMany = ({ images }) => {
   });
 };
 
+/* this will call the python script to run the analysis code */
+export const analyzeImage = async ({ file }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const dir = "src/entities/img/utils/";
+
+      // decode url to uri
+      var data = "";
+      await request.get(file.file, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+        } else {
+          console.log(error);
+        }
+      });
+
+      // write data to file
+      await fs.writeFile(dir + "analyze_data.txt", data, err => {
+        if (err) {
+          console.log(err);
+        }
+      });
+
+      // execute analysis script
+      const {stdout} = await exec(dir + "analyze.py");
+      
+      // get the data from analysis
+      let payload = null;
+      await fs.readFile(dir + 'rice_data.txt', async (err, data) => {
+        if (err) console.log(err);
+        
+        let split_data = await data.toString('utf8').split('\n');
+        payload = {yield: split_data[0], days: split_data[1]};
+      });
+      
+      // delete file
+      await exec("rm src/entities/img/utils/analyze_data.txt");
+      await exec("rm src/entities/img/utils/rice_data.txt");
+
+      resolve(payload);
+    } catch(err) {
+      console.log(err);
+      reject(500);
+    }
+  });
+};
+
 /* this will call the python script to run the segmentation code */
 export const segmentImage = async ({ file }) => {
   return new Promise(async (resolve, reject) => {
@@ -137,10 +185,11 @@ export const segmentImage = async ({ file }) => {
               {
                 cloud_name: CLOUDINARY_UPLOAD_CLOUD,
                 api_key: CLOUDINARY_UPLOAD_KEY,
-                api_secret: CLOUDINARY_UPLOAD_SECRET
+                api_secret: CLOUDINARY_UPLOAD_SECRET,
+                timeout: 3600000
               },
               function(err, result) {
-                if (err) {reject(500);}
+                if (err) {console.log(err), reject(500);}
                 // add response link to payload
                 resolve({name: result.original_filename, link: result.secure_url});
               }

@@ -6,7 +6,7 @@ const router = Router();
 /* This sends the info from the image to the database */
 router.post('/img/save', async (req, res) => {
   try {
-    const image = await ctrl.save(req.body);
+    await ctrl.save(req.body);
 
     res.status(200).json({
       status: 200,
@@ -29,7 +29,7 @@ router.post('/img/save', async (req, res) => {
 /* This sends the images to be saved to the database */
 router.post('/img/saveMany', async (req, res) => {
   try {
-    const image = await ctrl.saveMany(req.body);
+    await ctrl.saveMany(req.body);
 
     res.status(200).json({
       status: 200,
@@ -75,6 +75,8 @@ router.put('/img/update', async (req, res) => {
 /* This segments the image */
 router.post('/img/segment', async (req, res) => {
   try {
+    // so that large images do not timeout on bad connections
+    req.setTimeout(3600000);
     const fields = await ctrl.segmentImage({file: req.body});
 
     res.status(200).json({
@@ -87,6 +89,32 @@ router.post('/img/segment', async (req, res) => {
     switch (status) {
       case 500:
         message = 'Internal server error while segmenting image';
+        break;
+      case 400:
+        message = 'Bad request';
+        break;
+    }
+    res.status(status).json({ status, message });
+  }
+});
+
+/* This analyzes the image */
+router.post('/img/analyze', async (req, res) => {
+  try {
+    // so that large images do not timeout on bad connections
+    req.setTimeout(3600000);
+    const data = await ctrl.analyzeImage({file: req.body});
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully analyzed image',
+      data: data
+    });
+  } catch (status) {
+    let message = '';
+    switch (status) {
+      case 500:
+        message = 'Internal server error while analyzing image';
         break;
       case 400:
         message = 'Bad request';

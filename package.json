@@ -13,6 +13,7 @@
     "fs": "^0.0.1-security",
     "morgan": "^1.9.1",
     "pg": "^7.11.0",
+    "request": "^2.88.0",
     "sequelize": "^5.8.7"
   },
   "scripts": {
