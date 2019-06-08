@@ -322,7 +322,6 @@ export const getImages = ({
 
     Image.findAll({
       include: [
-        { model: Data, required: true },
         { model: User, attributes: ["firstname", "lastname"] }
       ],
       where: whereObject,
@@ -358,7 +357,7 @@ export const getImage = id => {
   return new Promise((resolve, reject) => {
     Image.findOne({
       include: [
-        { model: Data, required: true },
+        { model: Data, required: false },
         { model: Folder, attributes: ["year", "name"] },
         { model: User, attributes: ["firstname", "lastname"] }
       ],
@@ -390,6 +389,16 @@ export const updateImage = ({
       attributes: ["id"],
       where: { name: folder }
     }).then(folder_id => {
+      // delete existing data for the image
+      Data.destroy({
+        where: { image_id: id }
+      })
+      // then create a new one, LOL
+      attrib.map(attr => {
+        attr = {...attr, image_id: id};
+        Data.create(attr)
+      })
+
       Image.update(
         {
           name: name,
@@ -401,11 +410,9 @@ export const updateImage = ({
           private: is_private,
           season: season,
           env_cond: env_cond,
-          data: attrib,
           folder_id: folder_id.dataValues.id
         },
-        { where: { id: id } },
-        { include: [Data] }
+        { where: { id: id } }
       ).then(result => {
         return result ? resolve(200) : reject(500);
       });
