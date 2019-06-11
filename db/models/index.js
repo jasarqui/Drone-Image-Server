@@ -19,6 +19,6 @@ Folder.hasMany(Image);
 Image.belongsTo(Folder);
 // folder to layout relation
 Folder.hasMany(Layout);
-Layout.belongsTo(Layout);
+Layout.belongsTo(Folder);
 
 module.exports = { User, Image, Datum, Folder, Layout };

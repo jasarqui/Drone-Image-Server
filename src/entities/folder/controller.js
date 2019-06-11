@@ -1,8 +1,8 @@
-import db from '../../../db';
-import Folder from '../../../db/models/schema/folder';
-import Image from '../../../db/models/schema/image';
-import Layout from '../../../db/models/schema/layout';
-import sequelize from 'sequelize';
+import db from "../../../db";
+import Folder from "../../../db/models/schema/folder";
+import Image from "../../../db/models/schema/image";
+import Layout from "../../../db/models/schema/layout";
+import sequelize from "sequelize";
 
 /* this creates a new user in the database */
 export const addFolder = ({ season, date, report, layout }) => {
@@ -11,7 +11,7 @@ export const addFolder = ({ season, date, report, layout }) => {
     // VALUES (request.email, hash, request.firstname, request.lastname);
     Folder.create(
       {
-        name: (season === 'WET' ? 'WS' : 'DS') + date,
+        name: (season === "WET" ? "WS" : "DS") + date,
         season: season,
         year: date,
         report: report,
@@ -36,11 +36,11 @@ export const countFolderPages = ({ category, showData, user, search }) => {
     var whereObject = {};
 
     /* adding category to whereObject */
-    category === 'Dry Season'
-      ? (whereObject = { ...whereObject, season: 'DRY' })
-      : category === 'Wet Season'
-        ? (whereObject = { ...whereObject, season: 'WET' })
-        : whereObject;
+    category === "Dry Season"
+      ? (whereObject = { ...whereObject, season: "DRY" })
+      : category === "Wet Season"
+      ? (whereObject = { ...whereObject, season: "WET" })
+      : whereObject;
 
     /* adding search to whereObject */
     search
@@ -70,11 +70,11 @@ export const getFolders = ({ category, search, start }) => {
     var whereObject = {};
 
     /* adding category to whereObject */
-    category === 'Dry Season'
-      ? (whereObject = { ...whereObject, season: 'DRY' })
-      : category === 'Wet Season'
-        ? (whereObject = { ...whereObject, season: 'WET' })
-        : whereObject;
+    category === "Dry Season"
+      ? (whereObject = { ...whereObject, season: "DRY" })
+      : category === "Wet Season"
+      ? (whereObject = { ...whereObject, season: "WET" })
+      : whereObject;
 
     /* adding search to whereObject */
     search
@@ -91,11 +91,11 @@ export const getFolders = ({ category, search, start }) => {
     Folder.findAll({
       include: {
         model: Image,
-        attributes: ['id']
+        attributes: ["id"]
       },
-      group: 'folders.id',
+      group: "folders.id",
       where: whereObject,
-      order: ['year'],
+      order: ["year"],
       offset: start,
       limit: 10
     }).then(result => {
@@ -108,7 +108,7 @@ export const getFolders = ({ category, search, start }) => {
 export const getAllFolders = () => {
   return new Promise((resolve, reject) => {
     Folder.findAll({
-      attributes: ['name']
+      attributes: ["name"]
     }).then(result => {
       return result ? resolve(result) : reject(404);
     });
@@ -118,11 +118,19 @@ export const getAllFolders = () => {
 /* this will get a folder */
 export const getFolder = id => {
   return new Promise((resolve, reject) => {
-    Folder.findOne(
-      { where: { id: id } },
-      { include: { model: Layout, required: true } }
-    ).then(result => {
-      return result ? resolve(result) : reject(404);
+    var payload = null;
+    Folder.findOne({ where: { id: id } }).then(result => {
+      payload = result.dataValues;
+      Layout.findAll(
+        { attributes: ["name", "preview"] },
+        { where: { folder_id: id } }
+      )
+        .then(res => {
+          payload.layout = res;
+        })
+        .then(() => {
+          return payload ? resolve(payload) : reject(404);
+        });
     });
   });
 };
@@ -130,16 +138,23 @@ export const getFolder = id => {
 /* updates a folder */
 export const editFolder = ({ season, date, layout, report, id }) => {
   return new Promise((resolve, reject) => {
+    // delete layouts concerned to folder
+    Layout.destroy({ where: { folder_id: id } });
+    // then create them again
+    layout.map(file => {
+      file = { ...file, folder_id: id };
+      Layout.create(file);
+    });
+
+    // update folder
     Folder.update(
       {
-        name: (season === 'WET' ? 'WS' : 'DS') + date,
+        name: (season === "WET" ? "WS" : "DS") + date,
         season: season,
         year: date,
-        layout: layout,
         report: report
       },
-      { where: { id: id } },
-      { include: [Layout] }
+      { where: { id: id } }
     ).then(result => {
       return result ? resolve(result) : reject(500);
     });
@@ -149,13 +164,19 @@ export const editFolder = ({ season, date, layout, report, id }) => {
 /* updates a folder's files */
 export const editFiles = ({ layout, report, id }) => {
   return new Promise((resolve, reject) => {
+    // delete layouts concerned to folder
+    Layout.destroy({ where: { folder_id: id } });
+    // then create them again
+    layout.map(file => {
+      file = { ...file, folder_id: id };
+      Layout.create(file);
+    });
+
     Folder.update(
       {
-        layout: layout,
         report: report
       },
-      { where: { id: id } },
-      { include: [Layout] }
+      { where: { id: id } }
     ).then(result => {
       return result ? resolve(result) : reject(500);
     });

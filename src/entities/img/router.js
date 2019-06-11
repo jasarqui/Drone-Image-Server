@@ -76,7 +76,7 @@ router.put('/img/update', async (req, res) => {
 router.post('/img/segment', async (req, res) => {
   try {
     // so that large images do not timeout on bad connections
-    req.setTimeout(3600000);
+    req.setTimeout(0);
     const fields = await ctrl.segmentImage({file: req.body});
 
     res.status(200).json({
@@ -102,7 +102,7 @@ router.post('/img/segment', async (req, res) => {
 router.post('/img/analyze', async (req, res) => {
   try {
     // so that large images do not timeout on bad connections
-    req.setTimeout(3600000);
+    req.setTimeout(0);
     const data = await ctrl.analyzeImage({file: req.body});
 
     res.status(200).json({
