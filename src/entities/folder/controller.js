@@ -14,7 +14,7 @@ export const addFolder = ({ season, date, report, layout }) => {
         name: (season === "WET" ? "WS" : "DS") + date,
         season: season,
         year: date,
-        report: report,
+        report: report ? report : null,
         layout: layout
       },
       { include: [Layout] }
@@ -121,10 +121,10 @@ export const getFolder = id => {
     var payload = null;
     Folder.findOne({ where: { id: id } }).then(result => {
       payload = result.dataValues;
-      Layout.findAll(
-        { attributes: ["name", "preview"] },
-        { where: { folder_id: id } }
-      )
+      Layout.findAll({
+        attributes: ["name", "preview"],
+        where: { folder_id: id }
+      })
         .then(res => {
           payload.layout = res;
         })
@@ -152,7 +152,7 @@ export const editFolder = ({ season, date, layout, report, id }) => {
         name: (season === "WET" ? "WS" : "DS") + date,
         season: season,
         year: date,
-        report: report
+        report: report ? report : null
       },
       { where: { id: id } }
     ).then(result => {
@@ -174,7 +174,7 @@ export const editFiles = ({ layout, report, id }) => {
 
     Folder.update(
       {
-        report: report
+        report: report ? report : null
       },
       { where: { id: id } }
     ).then(result => {

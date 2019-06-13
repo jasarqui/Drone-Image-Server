@@ -9,7 +9,7 @@ const Folder = db.define('folders', {
   name: { type: Sequelize.STRING, allowNull: false, unique: true },
   season: { type: Sequelize.STRING, allowNull: false },
   year: { type: Sequelize.STRING, allowNull: false },
-  report: { type: Sequelize.BLOB, allowNull: false }
+  report: { type: Sequelize.STRING, allowNull: true }
 });
 
 module.exports = Folder;
