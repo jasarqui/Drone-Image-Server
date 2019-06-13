@@ -268,7 +268,21 @@ export const countPages = ({ category, showData, user, search, folder_id }) => {
   });
 };
 
-/* this will get the total pages for pagination */
+/* this will get all images in the folder for the report */
+export const getAllImages = ({id}) => {
+  return new Promise((resolve, reject) => {
+    Image.findAll({
+      include: [
+        { model: Data, required: false },
+      ],
+      where: {folder_id: id}
+    }).then(result => {
+      return result ? resolve(result) : reject(404)
+    })
+  })
+}
+
+/* this will get the searched images in folder */
 export const getImages = ({
   category,
   showData,
