@@ -24,7 +24,7 @@ In the PostgreSQL database, you must create a `SUPERUSER` to access the database
 
 Clone the application [server](https://github.com/jasarqui/Drone-Image-Server) and [client](https://github.com/jasarqui/Drone-Image-Client) folders. Run a terminal inside both folders and then run `npm install` or `yarn add` in each. This will set up the remaining dependencies needed by the application to run.
 
-In the server terminal, run `npm run seed` or `yarn seed` to set up the schema.
+In the server terminal, run `npm run seed` or `yarn seed` to set up the schema, then run `psql dronedb < node_modules/connect-pg-simple/table.sql` to create the session table.
 
 ## Development
 
