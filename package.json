@@ -14,7 +14,7 @@
     "morgan": "^1.9.1",
     "pg": "^7.11.0",
     "request": "^2.88.0",
-    "sequelize": "^4.38.0"
+    "sequelize": "^5.15.1"
   },
   "scripts": {
     "start": "backpack",
